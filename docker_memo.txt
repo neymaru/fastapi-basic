@@ -1,0 +1,17 @@
+# Docker - MySQL 컨테이너 실행
+예시> docker run -p 3309:3306 -e MYSQL_ROOT_PASSWORD=test -e MYSQL_DATABASE=test -d -v test:/db --name test mysql:8.0
+
+# Docker 컨테이너 확인
+docker ps
+
+# Docker volume 확인
+docker volume ls
+
+# Docker 컨테이너 접속
+docker exec -it test bash
+
+# MySQL 접속(root 유저 사용)
+mysql -u root -p
+
+# 데이터베이스 목록 보기
+show databases;
