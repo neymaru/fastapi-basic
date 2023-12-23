@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, Column, Integer, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base, relationship
 
 from schema.request import CreateToDoRequest
 
@@ -13,6 +13,7 @@ class ToDo(Base):
     id = Column(Integer, primary_key=True, index=True)
     contents = Column(String(256), nullable=False)
     is_done = Column(Boolean, nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"))
 
     # 파이썬의 __repr__이라는 메소드를 오버라이딩 해서 어떤 ToDo 객체가 출력 되는지 확인용
     def __repr__(self):
@@ -34,3 +35,14 @@ class ToDo(Base):
     def undone(self) -> "ToDo":
         self.if_done = False
         return self
+
+class User(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(256), nullable=False)
+    password = Column(String(256), nullable=False)
+    todos = relationship("ToDo", lazy="joined")    # 어떤 클래스와 연결을 할 지
+    # todos 속성은 실제로 컬럼이 생성되는 건 아니고 가상의 relationship
+    # User가 조회되는 시점에 todos를 함께 JOIN 해와서 User.todos 로 todo 데이터를 사용 가능
+    
