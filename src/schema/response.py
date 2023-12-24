@@ -18,3 +18,11 @@ class ToDoSchema(BaseModel):
 # 실제로는 ListToDoResponse을 응답에 활용
 class ToDoListSchema(BaseModel):
     todos: List[ToDoSchema] # todos 라는 키로 todo 전체 데이터를 리스트 형태로 담아서 리턴
+
+class UserSchema(BaseModel):    # 비밀번호가 해싱 되어있긴 하지만 굳이 해시 값을 노출할 필요가 없기 때문에 id와 username만 반환
+    id: int
+    username: str
+
+    # pydantic에서 SQLAlchemy를 바로 읽어줄 수 있도록 하기위한 옵션
+    class Config:
+        orm_mode = True

@@ -45,4 +45,11 @@ class User(Base):
     todos = relationship("ToDo", lazy="joined")    # 어떤 클래스와 연결을 할 지
     # todos 속성은 실제로 컬럼이 생성되는 건 아니고 가상의 relationship
     # User가 조회되는 시점에 todos를 함께 JOIN 해와서 User.todos 로 todo 데이터를 사용 가능
+
+    @classmethod
+    def create(cls, username: str, hashed_password: str) -> "User":
+        return cls(
+            username=username,
+            password=hashed_password,
+        )
     

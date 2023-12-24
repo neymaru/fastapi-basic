@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 
-from database.orm import ToDo
+from database.orm import ToDo, User
 from database.connection import get_db
 
 class ToDoRepository:
@@ -38,3 +38,15 @@ class ToDoRepository:
     def delete_todo(self, todo_id: int) -> None:  # 삭제 후 None 리턴
         self.session.execute(delete(ToDo).where(ToDo.id == todo_id)) # ToDo 테이블에 todo_id 와 일치하는 id를 찾아서 삭제
         self.session.commit()
+
+
+class UserRepository:
+    def __init__(self, session: Session = Depends(get_db)): 
+        self.session = session
+
+    def save_user(self, user: User) -> User:
+        self.session.add(instance=user)   
+        self.session.commit()  # db save
+        self.session.refresh(instance=user)  
+        return user
+
