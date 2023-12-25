@@ -26,3 +26,8 @@ class UserSchema(BaseModel):    # 비밀번호가 해싱 되어있긴 하지만 
     # pydantic에서 SQLAlchemy를 바로 읽어줄 수 있도록 하기위한 옵션
     class Config:
         orm_mode = True
+
+
+class JWTResponse(BaseModel):
+    access_token: str
+    

@@ -3,10 +3,12 @@ from fastapi import Body, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
 from database.connection import get_db
-from database.orm import ToDo
-from database.repository import ToDoRepository
+from database.orm import ToDo, User
+from database.repository import ToDoRepository, UserRepository
 from schema.response import ToDoListSchema, ToDoSchema
 from schema.request import CreateToDoRequest
+from security import get_access_token
+from service.user import UserService
 
 router = APIRouter(prefix="/todos")
 
@@ -14,11 +16,19 @@ router = APIRouter(prefix="/todos")
 ## 전체 조회
 @router.get("", status_code=200)
 def get_todos_handler(
+    access_token: str = Depends(get_access_token), # api가 호출 될 때마다 get_access_token이라는 dependency가 먼저 호출
     order: str | None = None,
-    # todo_repo: ToDoRepository = Depends(ToDoRepository),   # Dependency Injection을 걸어놔서 FastAPI가 request 요청이 들어올 때 ToDoRepository 주입
-    todo_repo: ToDoRepository = Depends(),   # 인자가 같을 땐 삭제 가능
-) -> ToDoListSchema: # response 타입을 ListToDoResponse 라고 정의
-    todos: List[ToDo] = todo_repo.get_todos()
+    user_service: UserService = Depends(),
+    user_repo: UserRepository =  Depends(),
+) -> ToDoListSchema: 
+    
+    username: str = user_service.decode_jwt(access_token=access_token)  # 앞으로 이 username을 통해서 user 조회
+
+    user: User | None = user_repo.get_user_by_username(username=username)
+    if not user:
+        raise HTTPException(status_code=404, detail="User Not Found")
+    
+    todos: List[ToDo] = user.todos
     if order and order == "DESC":   # order 값이 있고 oder 값이 "DESC" 이라면
         return ToDoListSchema(
             todos=[ToDoSchema.from_orm(todo) for todo in todos[::-1]] 
