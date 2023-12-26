@@ -79,7 +79,7 @@ def update_todo_handler(
         #     todo.undone()
         todo.done() if is_done else todo.undone()   # 삼항연산자
         # repository 함수로 데이터베이스에 데이터 업데이트
-        todo. ToDo = todo_repo.update_todo(todo=todo)
+        todo: ToDo = todo_repo.update_todo(todo=todo)
         return ToDoSchema.from_orm(todo)
     raise HTTPException(status_code=404, detail="Todo Not Found")
 

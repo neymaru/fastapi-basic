@@ -11,6 +11,7 @@ ORM(sqlalchemy)<br/>
 FastAPI Router<br/>
 Dependency Injection(의존성 주입)<br/>
 Repository Patter(레포지토리 패턴)<br/>
+로그인/유저인증 JWT<br/>
 <br/>
   
 #### 패키지 설치
